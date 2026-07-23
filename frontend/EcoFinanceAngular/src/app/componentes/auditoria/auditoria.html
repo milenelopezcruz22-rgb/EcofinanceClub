@@ -1,0 +1,98 @@
+<app-menu></app-menu>
+
+<main>
+
+    <section class="dashboard">
+
+        <div class="card-dashboard">
+            <h3>Total de Registros</h3>
+            <p>{{ listaAuditoria().length }}</p>
+        </div>
+
+        <div class="card-dashboard">
+            <h3>Resultados con Filtro</h3>
+            <p>{{ listaFiltrada().length }}</p>
+        </div>
+
+    </section>
+
+    <section class="contenedor">
+
+        <section class="formulario">
+
+            <h2>Filtros</h2>
+
+            <p class="subtitulo">
+                Filtra el historial por usuario, rol y rango de fechas.
+            </p>
+
+            <form [formGroup]="formularioFiltros">
+
+                <label>Usuario</label>
+                <input type="text" formControlName="usuario" placeholder="Ej: jperez">
+
+                <label>Rol</label>
+                <select formControlName="rol">
+                    <option value="">Todos</option>
+                    <option value="ROLE_ADMIN">Administrador</option>
+                    <option value="ROLE_GESTOR">Gestor</option>
+                    <option value="ROLE_MIEMBRO">Miembro</option>
+                </select>
+
+                <label>Desde</label>
+                <input type="date" formControlName="fechaDesde">
+
+                <label>Hasta</label>
+                <input type="date" formControlName="fechaHasta">
+
+                <button type="button" (click)="limpiarFiltros()">
+                    Limpiar Filtros
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="tabla">
+
+            <h2>Historial de Accesos a Módulos</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Grupo</th>
+                        <th>Módulo visitado</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let registro of listaFiltrada()">
+                        <td>{{ registro.fecha | date:'short' }}</td>
+                        <td>{{ registro.usuario }}</td>
+                        <td>{{ registro.rol }}</td>
+                        <td>{{ registro.grupo ?? '-' }}</td>
+                        <td>{{ registro.modulo }}</td>
+                    </tr>
+
+                    <tr *ngIf="listaFiltrada().length === 0">
+                        <td colspan="5">
+                            No hay registros que coincidan con los filtros.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </section>
+
+</main>

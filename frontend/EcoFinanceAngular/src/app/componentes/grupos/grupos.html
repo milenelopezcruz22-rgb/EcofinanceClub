@@ -1,0 +1,129 @@
+<app-menu></app-menu>
+
+
+<main>
+
+    <section class="dashboard">
+
+        <div class="card-dashboard">
+            <h3>Total de Grupos</h3>
+            <p>{{listaGrupos().length}}</p>
+        </div>
+
+        <div class="card-dashboard">
+            <h3>Estado</h3>
+            <p>Activo</p>
+        </div>
+
+    </section>
+
+    <section class="contenedor">
+
+        <section class="formulario" *ngIf="authService.esAdmin()">
+
+            <h2>Nuevo Grupo</h2>
+
+            <p class="subtitulo">
+                Crea un grupo para organizar gastos y presupuestos.
+            </p>
+
+            <form
+                [formGroup]="formularioGrupo"
+                (ngSubmit)="guardar()">
+
+                <label>Nombre del grupo</label>
+
+                <input
+                    type="text"
+                    formControlName="nombre"
+                    placeholder="Ej. Viaje de promoción">
+
+                <label>Descripción</label>
+
+                <textarea
+                    rows="5"
+                    formControlName="descripcion"
+                    placeholder="Descripción del grupo">
+                </textarea>
+
+                <button
+                    type="submit"
+                    [disabled]="formularioGrupo.invalid">
+
+                    Guardar Grupo
+
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="tabla">
+
+            <h2>Grupos registrados</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Nombre</th>
+
+                        <th>Descripción</th>
+
+                        <th *ngIf="authService.esAdmin()">Acción</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let grupo of listaGrupos()">
+
+                        <td>
+
+                            {{grupo.id}}
+
+                        </td>
+
+                        <td>
+
+                            {{grupo.nombre}}
+
+                        </td>
+
+                        <td>
+
+                            {{grupo.descripcion}}
+
+                        </td>
+
+                        <td *ngIf="authService.esAdmin()">
+
+                            <button
+                                *ngIf="grupo.id !== -1"
+                                class="btn-eliminar"
+                                (click)="eliminar(grupo.id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </section>
+
+</main>

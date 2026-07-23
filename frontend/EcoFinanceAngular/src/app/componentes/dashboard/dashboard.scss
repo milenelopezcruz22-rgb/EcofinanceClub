@@ -1,0 +1,335 @@
+// El dashboard reutiliza las clases globales de EcoFinance (.card,
+// .dashboard, .card-dashboard, .contenedor y .tabla). Aquí se refina la
+// distribución visual para convertirlo en un panel administrativo limpio y
+// consistente con el resto de la app.
+
+:host{
+    display:block;
+}
+
+.dashboard-page{
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 8px 32px;
+}
+
+.card {
+    border: 1px solid #E4EEE7;
+}
+
+.dashboard-hero{
+    margin-bottom: 24px;
+}
+
+.dashboard-toolbar{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:20px;
+    flex-wrap:wrap;
+
+}
+
+.dashboard-header-copy{
+    flex:1 1 320px;
+}
+
+.dashboard-toolbar h2{
+
+    margin-bottom:8px;
+    font-size: 1.7rem;
+    line-height: 1.2;
+
+}
+
+.dashboard-empty-state{
+    max-width: 1400px;
+    margin: 0 auto 20px;
+    padding: 0 10px;
+}
+
+.selector-grupo{
+
+    min-width:320px;
+    width:100%;
+    max-width:360px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+
+}
+
+.selector-grupo label{
+
+    display:block;
+    font-weight:bold;
+    color:#2E4A3D;
+
+}
+
+.selector-grupo select{
+
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #C9D8CF;
+    border-radius:8px;
+    background:#FAFCFB;
+    color:#2E4A3D;
+    font-size:14px;
+
+}
+
+.dashboard{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:18px;
+    margin-bottom:25px;
+    align-items:stretch;
+
+}
+
+.card-dashboard{
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:10px;
+    min-height:158px;
+    border:1px solid #E4EEE7;
+    background:linear-gradient(180deg, #FFFFFF 0%, #F9FCFA 100%);
+    transition:transform .15s ease, box-shadow .15s ease;
+    padding:20px;
+
+}
+
+.card-dashboard:hover{
+
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(46, 125, 87, 0.12);
+
+}
+
+.card-dashboard h3{
+
+    margin-bottom:0;
+    font-size:16px;
+    font-weight:700;
+    color:#2E7D57;
+
+}
+
+.card-dashboard p{
+
+    font-size:28px;
+    line-height:1.2;
+    font-weight:700;
+
+}
+
+.graficos{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    gap:20px;
+    margin:0 auto 25px;
+    max-width:1400px;
+    align-items:stretch;
+
+}
+
+.graficos.oculto{
+
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    opacity:0;
+    pointer-events:none;
+
+}
+
+.grafico-card{
+
+    background:linear-gradient(180deg, #FFFFFF 0%, #F9FCFA 100%);
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    border:1px solid #E4EEE7;
+    min-height:370px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+
+}
+
+.grafico-card h3{
+
+    color:#2E7D57;
+    margin-bottom:15px;
+    font-size:16px;
+    font-weight:bold;
+
+}
+
+.grafico-card canvas{
+
+    width:100% !important;
+    max-height:280px;
+    display:block;
+
+}
+
+.contenedor{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    gap:24px;
+    align-items:start;
+    margin-bottom:25px;
+
+}
+
+.tabla{
+
+    background:white;
+    padding:25px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    border:1px solid #E4EEE7;
+    overflow:hidden;
+
+}
+
+.tabla h2{
+
+    color:#2E7D57;
+    margin-bottom:18px;
+    font-size:20px;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    border:1px solid #DCE8DF;
+    border-radius:10px;
+    overflow:hidden;
+
+}
+
+th{
+
+    background:linear-gradient(180deg, #2E7D57 0%, #256A47 100%);
+    color:white;
+    padding:12px 14px;
+    text-align:left;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+
+}
+
+td{
+
+    padding:12px 14px;
+    border-bottom:1px solid #E6EEE8;
+    color:#2E4A3D;
+    background:white;
+
+}
+
+tbody tr:nth-child(even) td{
+
+    background:#F8FBF9;
+
+}
+
+tbody tr:hover td{
+
+    background:#EFF7F1;
+
+}
+
+tbody tr:nth-child(odd) td{
+    background:#FFFFFF;
+}
+
+tbody tr:last-child td{
+
+    border-bottom:none;
+
+}
+
+// Recomendaciones (Bloque C): misma paleta que el gráfico de impacto
+// ambiental (verde/ámbar/rojo), un borde de color a la izquierda de cada
+// item según el nivel que ya viene calculado desde el backend.
+.lista-recomendaciones{
+
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+
+}
+
+.lista-recomendaciones li{
+
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:14px 16px;
+    border-radius:10px;
+    border-left:5px solid;
+    background:#F8F9FA;
+    box-shadow:0 2px 6px rgba(0,0,0,.04);
+
+}
+
+.recomendacion-icono{
+
+    font-size:18px;
+    line-height:1.3;
+
+}
+
+.recomendacion-alta{
+    border-left-color:#C0392B;
+}
+
+.recomendacion-media{
+    border-left-color:#E9A83C;
+}
+
+.recomendacion-info{
+    border-left-color:#2E7D57;
+}
+
+@media (max-width: 768px) {
+
+    .dashboard-toolbar {
+        align-items:stretch;
+    }
+
+    .selector-grupo {
+        max-width:none;
+    }
+
+    .dashboard-page {
+        padding: 16px 6px 24px;
+    }
+
+    .grafico-card {
+        min-height:320px;
+    }
+
+    .tabla {
+        padding:20px;
+    }
+
+}

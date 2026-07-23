@@ -1,0 +1,171 @@
+<app-menu></app-menu>
+
+
+<main>
+
+    <section class="dashboard">
+
+        <div class="card-dashboard">
+            <h3>Grupos</h3>
+            <p>{{listaGrupos().length}}</p>
+        </div>
+
+        <div class="card-dashboard">
+            <h3>Categorías del grupo</h3>
+            <p>{{listaCategorias().length}}</p>
+        </div>
+
+    </section>
+
+
+    <section class="contenedor">
+
+
+        <section class="formulario">
+
+            <h2>Categorías</h2>
+
+            <p class="subtitulo">
+                Selecciona un grupo para ver y administrar sus categorías.
+            </p>
+
+            <form
+                [formGroup]="formulario"
+                (ngSubmit)="guardar()">
+
+                <label>Grupo</label>
+
+                <select formControlName="grupo">
+
+                    <option value="">
+                        Seleccione un grupo
+                    </option>
+
+                    <option
+                        *ngFor="let grupo of listaGrupos()"
+                        [value]="grupo.id">
+
+                        {{grupo.nombre}}
+
+                    </option>
+
+                </select>
+
+
+                <label>Nombre de la categoría</label>
+
+                <input
+                    type="text"
+                    formControlName="nombre"
+                    placeholder="Ej: Transporte, Alimentación..."
+                >
+
+
+                <label>Impacto ambiental</label>
+
+                <select formControlName="impactoAmbiental">
+
+                    <option value="">Seleccione un nivel</option>
+                    <option value="Bajo">Bajo</option>
+                    <option value="Medio">Medio</option>
+                    <option value="Alto">Alto</option>
+
+                </select>
+
+
+                <button
+                    type="submit"
+                    [disabled]="formulario.invalid"
+                    *ngIf="authService.puedeGestionar()">
+
+                    Guardar Categoría
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <section class="tabla">
+
+            <h2>Categorías del grupo seleccionado</h2>
+
+            <p *ngIf="!grupoSeleccionado()" class="subtitulo">
+                Selecciona un grupo arriba para ver sus categorías.
+            </p>
+
+            <table *ngIf="grupoSeleccionado()">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Nombre</th>
+
+                        <th>Impacto Ambiental</th>
+
+                        <th *ngIf="authService.puedeGestionar()">Acción</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let categoria of listaCategorias()">
+
+                        <td>
+
+                            {{categoria.id}}
+
+                        </td>
+
+                        <td>
+
+                            {{categoria.nombre}}
+
+                        </td>
+
+                        <td>
+
+                            <span [class]="claseImpacto(categoria.impactoAmbiental)">
+                                {{categoria.impactoAmbiental ?? 'Sin clasificar'}}
+                            </span>
+
+                        </td>
+
+                        <td *ngIf="authService.puedeGestionar()">
+
+                            <button
+                                class="btn-eliminar"
+                                (click)="eliminar(categoria.id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="listaCategorias().length === 0">
+
+                        <td colspan="4">
+                            Este grupo todavía no tiene categorías.
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </section>
+
+</main>

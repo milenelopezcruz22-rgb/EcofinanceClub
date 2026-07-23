@@ -1,0 +1,104 @@
+<header class="header-home">
+
+    <div class="logo">
+        EcoFinance
+    </div>
+
+    <nav *ngIf="!authService.isLoggedIn()">
+
+        <a routerLink="/login">
+            Iniciar sesión
+        </a>
+
+        <a routerLink="/registro" class="btn-nav-destacado">
+            Registrarse
+        </a>
+
+    </nav>
+
+    <nav *ngIf="authService.isLoggedIn()">
+
+        <a [routerLink]="authService.esAdmin() ? '/grupos' : '/dashboard'">
+            Ir a mi cuenta
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="home-landing">
+
+    <!-- QUÉ ES / CÓMO FUNCIONA -->
+    <section class="card seccion">
+
+        <h2>¿Qué es EcoFinance?</h2>
+
+        <p>
+            Es una plataforma de <strong>gastos compartidos</strong> pensada para grupos: familias,
+            amigos, compañeros de departamento o cualquier equipo que necesite administrar un
+            presupuesto en conjunto. Cada grupo organiza sus categorías, registra sus gastos y
+            puede ver en todo momento quién debe a quién, sin hojas de cálculo sueltas ni cuentas
+            perdidas en el chat.
+        </p>
+
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section class="seccion-beneficios">
+
+        <h2 class="titulo-seccion">Beneficios principales</h2>
+
+        <div class="grid-beneficios">
+
+            <div class="card beneficio">
+                <h3>Organización de grupos</h3>
+                <p>Crea grupos para tus viajes, tu casa compartida o cualquier gasto en conjunto, con miembros y roles claros.</p>
+            </div>
+
+            <div class="card beneficio">
+                <h3>Gastos compartidos</h3>
+                <p>Registra cada gasto, divide el costo entre los miembros y lleva un historial ordenado por categoría.</p>
+            </div>
+
+            <div class="card beneficio">
+                <h3>Control de presupuestos</h3>
+                <p>Define límites de gasto por categoría y visualiza en un dashboard si el grupo se mantiene dentro de lo planeado.</p>
+            </div>
+
+            <div class="card beneficio">
+                <h3>Seguimiento de deudas</h3>
+                <p>Consulta el saldo neto de cada miembro y registra pagos para saldar cuentas entre integrantes del grupo.</p>
+            </div>
+
+            <div class="card beneficio">
+                <h3>Enfoque sostenible</h3>
+                <p>Clasifica tus gastos según su impacto ambiental (bajo, medio o alto) y toma decisiones más conscientes en grupo.</p>
+            </div>
+
+            <div class="card beneficio">
+                <h3>Seguimiento financiero</h3>
+                <p>Visualiza tendencias de gasto por mes, por categoría y por miembro, todo en un solo lugar.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- NOSOTROS -->
+    <section class="card seccion" id="nosotros">
+
+        <h2>Nosotros</h2>
+
+        <p>
+            EcoFinance nació como un proyecto universitario con un objetivo simple: hacer que
+            administrar gastos en grupo sea más fácil y, de paso, más consciente con el medio
+            ambiente. No buscamos ser una gran empresa ni reemplazar herramientas financieras
+            profesionales — solo ofrecer una forma clara y ordenada de compartir cuentas entre
+            personas que confían entre sí, con un pequeño empujón hacia hábitos de consumo más
+            sostenibles.
+        </p>
+
+    </section>
+
+</main>

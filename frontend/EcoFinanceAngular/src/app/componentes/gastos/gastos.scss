@@ -1,0 +1,151 @@
+.contenedor{
+
+    display:flex;
+
+    gap:25px;
+
+    align-items:flex-start;
+
+}
+
+.formulario{
+
+    width:330px;
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:10px;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+
+}
+
+.formulario h2{
+
+    color:#2E7D57;
+
+    margin-bottom:8px;
+
+}
+
+.subtitulo{
+
+    color:#777;
+
+    margin-bottom:18px;
+
+    font-size:14px;
+
+}
+
+.formulario label{
+
+    display:block;
+
+    margin-top:12px;
+
+    margin-bottom:5px;
+
+    font-weight:bold;
+
+}
+
+.formulario input,
+.formulario select,
+.formulario textarea{
+
+    width:100%;
+
+    padding:10px;
+
+    border:1px solid #CCCCCC;
+
+    border-radius:6px;
+
+    margin-bottom:10px;
+
+}
+
+.formulario button{
+
+    width:100%;
+
+    margin-top:15px;
+
+    padding:12px;
+
+    background:#2E7D57;
+
+    color:white;
+
+    border:none;
+
+    border-radius:6px;
+
+}
+
+.impacto-calculado{
+
+    margin:-4px 0 12px 0;
+
+    font-size:13px;
+
+    color:#555;
+
+}
+
+.tabla{
+
+    flex:1;
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:10px;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+
+}
+
+.tabla h2{
+
+    color:#2E7D57;
+
+    margin-bottom:20px;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+th{
+
+    background:#2E7D57;
+
+    color:white;
+
+    padding:12px;
+
+}
+
+td{
+
+    padding:10px;
+
+    border-bottom:1px solid #DDDDDD;
+
+}
+
+tr:hover{
+
+    background:#F3FAF6;
+
+}

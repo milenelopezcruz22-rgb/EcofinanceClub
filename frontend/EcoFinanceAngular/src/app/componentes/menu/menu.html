@@ -1,0 +1,35 @@
+<nav *ngIf="authService.isLoggedIn()">
+  <a *ngIf="mostrarDashboard()" routerLink="/dashboard">Dashboard</a>
+  <ng-container *ngIf="mostrarDashboard()">|</ng-container>
+
+  <a *ngIf="mostrarGrupos()" routerLink="/grupos">Grupos</a>
+  <ng-container *ngIf="mostrarGrupos()">|</ng-container>
+
+  <a *ngIf="mostrarGastos()" routerLink="/gastos">Gastos</a>
+  <ng-container *ngIf="mostrarGastos()">|</ng-container>
+
+  <a *ngIf="mostrarDeudas()" routerLink="/deudas">Deudas</a>
+  <ng-container *ngIf="mostrarDeudas()">|</ng-container>
+
+  <a *ngIf="mostrarPresupuestos()" routerLink="/presupuestos">Presupuestos</a>
+  <ng-container *ngIf="mostrarPresupuestos()">|</ng-container>
+
+  <a *ngIf="mostrarCategorias()" routerLink="/categorias">Categorías</a>
+  <ng-container *ngIf="mostrarCategorias()">|</ng-container>
+
+  <a *ngIf="mostrarMiembros()" routerLink="/miembros">Miembros</a>
+  <ng-container *ngIf="mostrarMiembros()">|</ng-container>
+
+  <a *ngIf="mostrarAuditoria()" routerLink="/auditoria" style="color: white; font-weight: bold;">Auditoría</a>
+  <ng-container *ngIf="mostrarAuditoria()">|</ng-container>
+
+  <a *ngIf="mostrarAccesos()" routerLink="/accesos" style="color: white; font-weight: bold;">Accesos</a>
+  <ng-container *ngIf="mostrarAccesos()">|</ng-container>
+
+  <a *ngIf="mostrarPerfil()" routerLink="/perfil">Mi Perfil</a>
+  <ng-container *ngIf="mostrarPerfil()">|</ng-container>
+
+  <a (click)="cerrarSesion()" class="btn-logout" style="cursor: pointer;">Cerrar Sesión</a>
+</nav>
+
+<hr>

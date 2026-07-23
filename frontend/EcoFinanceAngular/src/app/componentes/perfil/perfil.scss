@@ -1,0 +1,32 @@
+.contenedor{
+    display:flex;
+    align-items:flex-start;
+}
+
+.formulario{
+    width:100%;
+    max-width:420px;
+}
+
+.formulario h2{
+    color:#2E7D57;
+    margin-bottom:8px;
+}
+
+.subtitulo{
+    color:#777;
+    margin-bottom:18px;
+    font-size:14px;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+
+  p {
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+  }
+}

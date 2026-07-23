@@ -1,0 +1,147 @@
+<app-menu></app-menu>
+
+
+<main>
+
+    <section class="card">
+        <h2>Deudas EcoFinance</h2>
+        <p class="subtitulo">
+            Selecciona un grupo para ver el saldo neto, la deuda simplificada y el historial de pagos.
+        </p>
+
+        <form class="formulario" [formGroup]="formulario">
+            <h2>Seleccionar grupo</h2>
+            <label>Grupo</label>
+            <select formControlName="grupo">
+                <option value="">Seleccione un grupo</option>
+                <option *ngFor="let grupo of listaGrupos()" [value]="grupo.id">
+                    {{ grupo.nombre }}
+                </option>
+            </select>
+        </form>
+    </section>
+
+    <p *ngIf="!saldos().length && !deudas().length && !pagos().length" class="subtitulo" style="padding: 0 10px;">
+        Elige un grupo arriba para ver sus saldos y deudas.
+    </p>
+
+    <section class="contenedor" *ngIf="saldos().length || deudas().length || pagos().length">
+
+        <section class="tabla">
+            <h2>Saldo Neto por Miembro</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Miembro</th>
+                        <th>Pagado</th>
+                        <th>Cuota</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of saldos()">
+                        <td>{{ s.nombre }}</td>
+                        <td>S/. {{ s.pagado | number:'1.2-2' }}</td>
+                        <td>S/. {{ s.cuota | number:'1.2-2' }}</td>
+                        <td [style.color]="s.saldo < 0 ? '#C0392B' : '#2E7D57'">
+                            S/. {{ s.saldo | number:'1.2-2' }}
+                        </td>
+                    </tr>
+                    <tr *ngIf="saldos().length === 0">
+                        <td colspan="4">Este grupo todavía no tiene miembros o gastos.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="tabla">
+            <h2>¿Quién le debe a quién?</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Deudor</th>
+                        <th>Acreedor</th>
+                        <th>Monto</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let d of deudas()">
+                        <td>{{ d.deudorNombre }}</td>
+                        <td>{{ d.acreedorNombre }}</td>
+                        <td>S/. {{ d.monto | number:'1.2-2' }}</td>
+                        <td>
+                            <button
+                                *ngIf="!authService.esMiembro()"
+                                type="button" class="btn-editar" (click)="seleccionarDeuda(d)">
+                                Registrar pago
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="deudas().length === 0">
+                        <td colspan="4">Todas las cuentas del grupo están saldadas. 🎉</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="formulario" *ngIf="mostrarFormPago() && !authService.esMiembro()">
+                <h2>Registrar pago</h2>
+
+                <p class="subtitulo">
+                    <strong>{{ formPago.value.deudorNombre }}</strong>
+                    le paga a
+                    <strong>{{ formPago.value.acreedorNombre }}</strong>
+                </p>
+
+                <form [formGroup]="formPago" (ngSubmit)="registrarPago()">
+                    <label>Monto</label>
+                    <input type="number" step="0.01" min="0.01" formControlName="monto" />
+
+                    <label>Fecha</label>
+                    <input type="date" formControlName="fecha" />
+
+                    <label>Nota (opcional)</label>
+                    <input type="text" formControlName="nota" placeholder="Yape, efectivo, etc." />
+
+                    <div class="acciones-formulario">
+                        <button type="submit" class="btn-editar" [disabled]="formPago.invalid">
+                            Confirmar pago
+                        </button>
+                        <button type="button" class="btn-eliminar" (click)="cancelarPago()">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="tabla">
+            <h2>Pagos Registrados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Deudor</th>
+                        <th>Acreedor</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Nota</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of pagos()">
+                        <td>{{ p.deudorNombre }}</td>
+                        <td>{{ p.acreedorNombre }}</td>
+                        <td>S/. {{ p.monto | number:'1.2-2' }}</td>
+                        <td>{{ p.fecha }}</td>
+                        <td>{{ p.nota || '—' }}</td>
+                    </tr>
+                    <tr *ngIf="pagos().length === 0">
+                        <td colspan="5">Todavía no se registraron pagos en este grupo.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </section>
+
+</main>

@@ -1,0 +1,209 @@
+<app-menu></app-menu>
+
+
+<main>
+
+    <section class="dashboard">
+
+        <div class="card-dashboard">
+            <h3>Total Miembros</h3>
+            <p>{{listaMiembros().length}}</p>
+        </div>
+
+        <div class="card-dashboard">
+            <h3>Grupos</h3>
+            <p>{{listaGrupos().length}}</p>
+        </div>
+
+    </section>
+
+
+    <section class="contenedor">
+
+
+        <!-- Asignar es una acción exclusiva del Administrador General: es
+             quien vincula una cuenta ya registrada (tabla "usuarios") a un
+             grupo. GESTOR/MIEMBRO ni siquiera ven este formulario. -->
+        <section class="formulario" *ngIf="authService.esAdmin()">
+
+            <h2>Asignar Usuario a un Grupo</h2>
+
+            <p class="subtitulo">
+                Selecciona una cuenta ya registrada (sin grupo todavía) y asígnala a un grupo con su rol correspondiente.
+            </p>
+
+            <form
+                [formGroup]="formulario"
+                (ngSubmit)="guardar()">
+
+                <label>Grupo</label>
+
+                <select formControlName="grupo">
+
+                    <option value="">
+                        Seleccione un grupo
+                    </option>
+
+                    <option
+                        *ngFor="let grupo of listaGrupos()"
+                        [value]="grupo.id">
+
+                        {{grupo.nombre}}
+
+                    </option>
+
+                </select>
+
+
+                <label>Usuario registrado (sin grupo)</label>
+
+                <select formControlName="usuario">
+
+                    <option value="">
+                        Seleccione un usuario
+                    </option>
+
+                    <option
+                        *ngFor="let usuario of usuariosDisponibles()"
+                        [value]="usuario.id">
+
+                        {{usuario.username}} — {{usuario.nombreCompleto ?? usuario.email}}
+
+                    </option>
+
+                </select>
+
+                <p *ngIf="usuariosDisponibles().length === 0" class="subtitulo">
+                    No hay usuarios registrados pendientes de asignar a un grupo.
+                </p>
+
+
+                <label>Rol dentro del grupo</label>
+
+                <select formControlName="rolGrupo">
+
+                    <option value="MIEMBRO">
+                        Miembro
+                    </option>
+
+                    <option value="GESTOR">
+                        Gestor (administrador de este grupo)
+                    </option>
+
+                </select>
+
+
+                <button
+                    type="submit"
+                    [disabled]="formulario.invalid">
+
+                    Asignar al Grupo
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <section class="tabla">
+
+            <h2>Miembros registrados</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Grupo</th>
+
+                        <th>Nombre</th>
+
+                        <th>Correo</th>
+
+                        <th>Rol</th>
+
+                        <th>Cuenta vinculada</th>
+
+                        <th *ngIf="authService.puedeGestionar()">Acción</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let miembro of listaMiembros()">
+
+                        <td>
+
+                            {{miembro.id}}
+
+                        </td>
+
+                        <td>
+
+                            {{miembro.grupoNombre ?? 'Sin grupo'}}
+
+                        </td>
+
+                        <td>
+
+                            {{miembro.nombre}}
+
+                        </td>
+
+                        <td>
+
+                            {{miembro.correo}}
+
+                        </td>
+
+                        <td>
+
+                            <span
+                                [style.color]="
+                                    miembro.rolGrupo=='GESTOR'
+                                    ? '#2E7D57'
+                                    : '#555'
+                                ">
+
+                                {{miembro.rolGrupo}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{miembro.usuarioUsername ?? 'Sin vincular'}}
+
+                        </td>
+
+                        <td *ngIf="authService.puedeGestionar()">
+
+                            <button
+                                class="btn-eliminar"
+                                (click)="eliminar(miembro.id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </section>
+
+</main>

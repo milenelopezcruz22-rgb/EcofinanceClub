@@ -1,0 +1,60 @@
+<div class="contenedor-login">
+
+    <div class="card">
+
+        <h1>EcoFinance</h1>
+
+        <h3>Iniciar Sesión</h3>
+
+        <form
+        [formGroup]="formularioLogin"
+        (ngSubmit)="ingresar()">
+
+            <label>Usuario</label>
+
+            <input
+            type="text"
+            formControlName="usuario">
+
+            <small
+            *ngIf="formularioLogin.get('usuario')?.touched &&
+            formularioLogin.get('usuario')?.invalid">
+
+            Usuario obligatorio
+
+            </small>
+
+            <label>Contraseña</label>
+
+            <input
+            type="password"
+            formControlName="password">
+
+            <small
+            *ngIf="formularioLogin.get('password')?.touched &&
+            formularioLogin.get('password')?.invalid">
+
+            Contraseña obligatoria
+
+            </small>
+
+            <button
+            type="submit">
+
+            Ingresar
+
+            </button>
+
+        </form>
+
+        <p class="subtitulo">
+            ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
+        </p>
+
+        <p class="subtitulo">
+            <a routerLink="/home">&larr; Volver al inicio</a>
+        </p>
+
+    </div>
+
+</div>

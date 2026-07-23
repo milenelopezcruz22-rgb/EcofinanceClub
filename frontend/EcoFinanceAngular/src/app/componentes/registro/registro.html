@@ -1,0 +1,92 @@
+<div class="contenedor-login">
+
+    <div class="card">
+
+        <h1>EcoFinance</h1>
+
+        <h3>Crear cuenta</h3>
+
+        <p class="subtitulo">
+            Solo tus datos de acceso. Un administrador te asignará a un grupo después.
+        </p>
+
+        <form
+        [formGroup]="formularioRegistro"
+        (ngSubmit)="registrar()">
+
+            <label>Nombre completo</label>
+
+            <input
+            type="text"
+            formControlName="nombreCompleto">
+
+            <small
+            *ngIf="formularioRegistro.get('nombreCompleto')?.touched &&
+            formularioRegistro.get('nombreCompleto')?.invalid">
+
+            Nombre completo obligatorio
+
+            </small>
+
+            <label>Correo electrónico</label>
+
+            <input
+            type="email"
+            formControlName="email">
+
+            <small
+            *ngIf="formularioRegistro.get('email')?.touched &&
+            formularioRegistro.get('email')?.invalid">
+
+            Correo obligatorio y válido
+
+            </small>
+
+            <label>Usuario</label>
+
+            <input
+            type="text"
+            formControlName="username">
+
+            <small
+            *ngIf="formularioRegistro.get('username')?.touched &&
+            formularioRegistro.get('username')?.invalid">
+
+            Usuario obligatorio (mínimo 3 caracteres)
+
+            </small>
+
+            <label>Contraseña</label>
+
+            <input
+            type="password"
+            formControlName="password">
+
+            <small
+            *ngIf="formularioRegistro.get('password')?.touched &&
+            formularioRegistro.get('password')?.invalid">
+
+            Contraseña obligatoria (mínimo 6 caracteres)
+
+            </small>
+
+            <button
+            type="submit">
+
+            Crear cuenta
+
+            </button>
+
+        </form>
+
+        <p class="subtitulo">
+            ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+        </p>
+
+        <p class="subtitulo">
+            <a routerLink="/home">&larr; Volver al inicio</a>
+        </p>
+
+    </div>
+
+</div>

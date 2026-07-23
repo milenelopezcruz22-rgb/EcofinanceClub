@@ -1,0 +1,28 @@
+# .htaccess para hosting tradicional (Apache) en public_html.
+# Necesario para que las rutas internas de la SPA Angular (ej. /gastos,
+# /presupuestos) no den 404 al recargar la página: toda petición que no
+# corresponda a un archivo o carpeta real se redirige a index.html, donde
+# el Router de Angular toma el control.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Si la petición es un archivo o directorio real (JS, CSS, imágenes,
+  # favicon, etc.), servirlo tal cual.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Cualquier otra ruta (las rutas internas del Router de Angular) se
+  # reenvía a index.html.
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Evita que el navegador cachee agresivamente index.html, para que cada
+# despliegue nuevo se refleje sin que el usuario tenga que forzar el refresco.
+<IfModule mod_headers.c>
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>

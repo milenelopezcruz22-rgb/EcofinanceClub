@@ -1,0 +1,33 @@
+nav{
+
+    background:#2E7D57;
+
+    padding:18px 40px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    box-shadow:0 3px 8px rgba(0,0,0,.12);
+
+}
+
+a{
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    transition:.2s;
+
+}
+
+a:hover{
+
+    color:#DDF6E8;
+
+}

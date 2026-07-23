@@ -1,0 +1,180 @@
+<app-menu></app-menu>
+
+
+<main>
+
+    <section class="dashboard">
+
+        <div class="card-dashboard">
+            <h3>Total Presupuestos</h3>
+            <p>{{listaPresupuestos().length}}</p>
+        </div>
+
+        <div class="card-dashboard">
+            <h3>Grupos</h3>
+            <p>{{listaGrupos().length}}</p>
+        </div>
+
+    </section>
+
+
+    <section class="contenedor">
+
+        <section class="formulario" *ngIf="authService.puedeGestionar()">
+
+            <h2>Nuevo Presupuesto</h2>
+
+            <p class="subtitulo">
+                Registra un presupuesto para controlar los gastos del grupo.
+            </p>
+
+            <form
+                [formGroup]="formulario"
+                (ngSubmit)="guardar()"
+            >
+
+                <label>Grupo</label>
+
+                <select formControlName="grupo">
+
+                    <option value="">
+                        Seleccione un grupo
+                    </option>
+
+                    <option
+                        *ngFor="let grupo of listaGrupos()"
+                        [value]="grupo.id">
+
+                        {{grupo.nombre}}
+
+                    </option>
+
+                </select>
+
+
+                <label>Categoría</label>
+
+                <select formControlName="categoria">
+
+                    <option value="">
+                        {{ categoriasDelGrupo().length === 0
+                            ? 'Seleccione primero un grupo'
+                            : 'Seleccione una categoría' }}
+                    </option>
+
+                    <option
+                        *ngFor="let categoria of categoriasDelGrupo()"
+                        [value]="categoria.id">
+
+                        {{categoria.nombre}}
+
+                    </option>
+
+                </select>
+
+
+                <label>Límite de gasto</label>
+
+                <input
+                    type="number"
+                    formControlName="limiteGasto"
+                    placeholder="0.00"
+                >
+
+                <button
+                    type="submit"
+                    [disabled]="formulario.invalid">
+
+                    Guardar Presupuesto
+
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="tabla">
+
+            <h2>Presupuestos registrados</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Grupo</th>
+
+                        <th>Categoría</th>
+
+                        <th>Límite</th>
+
+                        <th>Gastado</th>
+
+                        <th>Estado</th>
+
+                        <th *ngIf="authService.puedeGestionar()">Acción</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let presupuesto of listaPresupuestos()"
+                    >
+
+                        <td>
+
+                            {{presupuesto.grupoNombre ?? 'Sin grupo'}}
+
+                        </td>
+
+                        <td>
+
+                            {{presupuesto.categoriaNombre ?? '—'}}
+
+                        </td>
+
+                        <td>
+
+                            S/. {{presupuesto.limiteGasto}}
+
+                        </td>
+
+                        <td>
+
+                            S/. {{presupuesto.gastoActual}}
+
+                        </td>
+
+                        <td>
+
+                            {{estado(presupuesto)}}
+
+                        </td>
+
+                        <td *ngIf="authService.puedeGestionar()">
+
+                            <button
+                                class="btn-eliminar"
+                                (click)="eliminar(presupuesto.id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </section>
+
+</main>

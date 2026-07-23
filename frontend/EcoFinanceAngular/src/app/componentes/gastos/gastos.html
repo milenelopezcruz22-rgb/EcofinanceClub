@@ -1,0 +1,243 @@
+<app-menu></app-menu>
+
+
+<main>
+
+    <section class="dashboard">
+
+        <div class="card-dashboard">
+            <h3>Total Gastos</h3>
+            <p>{{listaGastos().length}}</p>
+        </div>
+
+        <div class="card-dashboard">
+            <h3>Total Grupos</h3>
+            <p>{{listaGrupos().length}}</p>
+        </div>
+
+        <div class="card-dashboard">
+            <h3>Estado</h3>
+            <p>Activo</p>
+        </div>
+
+    </section>
+
+
+    <section class="contenedor">
+
+        <section class="formulario">
+
+            <h2>Registrar Gasto</h2>
+
+            <p class="subtitulo">
+                Registra un gasto para mantener el control financiero del grupo.
+            </p>
+
+            <form
+                [formGroup]="formulario"
+                (ngSubmit)="guardar()">
+
+                <label>Grupo</label>
+
+                <select formControlName="grupo">
+
+                    <option value="">
+                        Seleccione un grupo
+                    </option>
+
+                    <option
+                        *ngFor="let grupo of listaGrupos()"
+                        [value]="grupo.id">
+
+                        {{grupo.nombre}}
+
+                    </option>
+
+                </select>
+
+
+                <label>Descripción</label>
+
+                <input
+                    type="text"
+                    formControlName="descripcion"
+                    placeholder="Descripción del gasto">
+
+
+                <label>Monto (S/.)</label>
+
+                <input
+                    type="number"
+                    formControlName="monto"
+                    placeholder="0.00">
+
+
+                <label>Categoría</label>
+
+                <select formControlName="categoria">
+
+                    <option value="">
+                        {{ categoriasDelGrupo().length === 0
+                            ? 'Seleccione primero un grupo'
+                            : 'Seleccione una categoría' }}
+                    </option>
+
+                    <option
+                        *ngFor="let categoria of categoriasDelGrupo()"
+                        [value]="categoria.id">
+
+                        {{categoria.nombre}}
+
+                    </option>
+
+                </select>
+
+                <!-- El impacto ya no lo elige el usuario: se calcula siempre
+                     a partir de la categoría elegida arriba (Bloque B), para
+                     que nunca quede desincronizado con su clasificación real. -->
+                <p class="impacto-calculado" *ngIf="formulario.get('categoria')?.value">
+                    Impacto ambiental de esta categoría:
+                    <strong>{{ impactoDeCategoria(formulario.get('categoria')?.value) }}</strong>
+                </p>
+
+
+                <label>Pagador</label>
+
+                <select formControlName="pagador">
+
+                    <option value="">
+                        {{ miembrosDelGrupo().length === 0
+                            ? 'Seleccione primero un grupo'
+                            : 'Seleccione un pagador' }}
+                    </option>
+
+                    <option
+                        *ngFor="let miembro of miembrosDelGrupo()"
+                        [value]="miembro.id">
+
+                        {{miembro.nombre}}
+
+                    </option>
+
+                </select>
+
+
+                <label>Fecha</label>
+
+                <input
+                    type="date"
+                    formControlName="fecha">
+
+
+                <button
+                    type="submit"
+                    [disabled]="formulario.invalid">
+
+                    Guardar Gasto
+
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="tabla">
+
+            <h2>Gastos registrados</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Grupo</th>
+
+                        <th>Descripción</th>
+
+                        <th>Categoría</th>
+
+                        <th>Pagador</th>
+
+                        <th>Monto</th>
+
+                        <th>Por Persona</th>
+
+                        <th *ngIf="authService.puedeGestionar()">Acción</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let gasto of listaGastos()">
+
+                        <td>
+
+                            {{gasto.id}}
+
+                        </td>
+
+                        <td>
+
+                            {{gasto.grupoNombre ?? 'Sin grupo'}}
+
+                        </td>
+
+                        <td>
+
+                            {{gasto.descripcion}}
+
+                        </td>
+
+                        <td>
+
+                            {{gasto.categoriaNombre ?? '—'}}
+
+                        </td>
+
+                        <td>
+
+                            {{gasto.pagadorNombre ?? '—'}}
+
+                        </td>
+
+                        <td style="font-weight:bold; color:#2E7D57;">
+
+                            S/. {{gasto.monto}}
+
+                        </td>
+
+                        <td>
+
+                            S/. {{gasto.montoPorPersona}}
+
+                        </td>
+
+                        <td *ngIf="authService.puedeGestionar()">
+
+                            <button
+                                class="btn-eliminar"
+                                (click)="eliminar(gasto.id)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </section>
+
+</main>

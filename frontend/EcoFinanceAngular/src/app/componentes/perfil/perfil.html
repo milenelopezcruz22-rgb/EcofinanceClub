@@ -1,0 +1,27 @@
+<app-menu></app-menu>
+
+<main>
+
+    <section class="contenedor">
+
+        <section class="formulario">
+
+            <h2>Mi Perfil</h2>
+
+            <p class="subtitulo">
+                Datos de la cuenta con la que iniciaste sesión.
+            </p>
+
+            <div class="card">
+
+                <p><strong>Usuario:</strong> {{ authService.getUsername() }}</p>
+
+                <p><strong>Rol:</strong> {{ authService.getRol() }}</p>
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
