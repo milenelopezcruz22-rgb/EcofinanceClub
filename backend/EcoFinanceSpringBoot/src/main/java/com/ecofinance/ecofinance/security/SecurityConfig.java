@@ -50,7 +50,13 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration);
+        // Registrado para "/**" (no solo "/api/**") como red de seguridad: si
+        // el navegador manda un preflight OPTIONS a una ruta sin el prefijo
+        // "/api" (por una URL mal armada en el frontend, por ejemplo), el
+        // preflight igual recibe los headers CORS y no queda bloqueado en el
+        // navegador. Esto NO afecta autorización ni roles: el bloqueo real de
+        // acceso lo sigue haciendo authorizeHttpRequests(), que no se toca.
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
@@ -80,6 +86,14 @@ public class SecurityConfig {
                             response.getWriter().write("{\"error\":\"No tiene permisos para acceder a este recurso.\"}");
                         }))
                 .authorizeHttpRequests(auth -> auth
+                        // El navegador nunca manda credenciales/JWT en un preflight OPTIONS,
+                        // así que debe dejarse pasar sin autenticación para TODAS las rutas,
+                        // antes que cualquier regla de rol. Esto no cambia ningún permiso:
+                        // las peticiones reales (GET/POST/PUT/DELETE) que vengan después del
+                        // preflight se siguen validando exactamente igual, con las mismas
+                        // reglas de más abajo.
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Únicamente registro y login quedan públicos: un usuario todavía
                         // no tiene token cuando llama a estos dos endpoints.
                         .requestMatchers("/api/auth/registro", "/api/auth/login").permitAll()
