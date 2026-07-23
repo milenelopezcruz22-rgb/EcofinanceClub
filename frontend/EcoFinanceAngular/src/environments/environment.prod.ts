@@ -3,5 +3,5 @@
 // servicio backend (Settings > Networking > Public Networking en Railway).
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://tu-app-production.up.railway.app/api'
+  apiUrl: 'https://ecofinanceclub-production.up.railway.app' // Tu URL de Railway
 };
