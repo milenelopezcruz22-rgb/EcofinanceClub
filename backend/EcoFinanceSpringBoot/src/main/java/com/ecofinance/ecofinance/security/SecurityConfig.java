@@ -31,11 +31,10 @@ public class SecurityConfig {
 
     // Orígenes permitidos por CORS, configurable por variable de entorno
     // (app.cors.allowed-origins / CORS_ALLOWED_ORIGINS en Railway), separados
-    // por coma. Si no se define nada, se mantienen los mismos orígenes que ya
-    // funcionaban (localhost:4200) más el dominio de producción, así el
-    // frontend en Angular puede consumir la API tanto en desarrollo como
-    // desplegado en el hosting tradicional.
-    @Value("${app.cors.allowed-origins:http://localhost:4200,https://midominio.com,https://www.midominio.com}")
+    // por coma. Si no se define nada, se usan estos por defecto: el dominio
+    // de producción (con y sin "www") y localhost:4200 para seguir probando
+    // en desarrollo local sin romper nada.
+    @Value("${app.cors.allowed-origins:https://ecofinanceclub.com,https://www.ecofinanceclub.com,http://localhost:4200}")
     private String allowedOrigins;
 
     @Bean
