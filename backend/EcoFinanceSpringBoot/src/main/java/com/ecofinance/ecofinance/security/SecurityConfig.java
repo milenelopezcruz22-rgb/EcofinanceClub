@@ -52,14 +52,33 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // Se recorta cada origen (espacios en blanco y comillas sueltas que
-        // suelen quedar pegadas al copiar/pegar el valor en el panel de
-        // variables de Railway) para que un espacio de más o una comilla
-        // accidental no rompa la comparación exacta del origen.
-        List<String> origenes = Arrays.stream(allowedOrigins.split(","))
-                .map(String::trim)
-                .map(o -> o.replaceAll("^[\"']+|[\"']+$", ""))
+        // Limpieza por LISTA BLANCA: se descarta cualquier carácter que no
+        // pueda aparecer legítimamente en un origen (letras, números, "." "-"
+        // ":" "/"). Esto elimina de raíz comillas, espacios comunes Y
+        // caracteres invisibles que un simple trim() no detecta (BOM U+FEFF,
+        // espacio de ancho cero U+200B, espacio duro U+00A0, etc.), que son
+        // la causa real de que "https://ecofinanceclub.com" no matcheara
+        // aunque se viera idéntico en los logs.
+        List<String> origenesDesdeConfig = Arrays.stream(allowedOrigins.split(","))
+                .map(o -> o.replaceAll("[^a-zA-Z0-9.\\-:/]", ""))
                 .filter(o -> !o.isEmpty())
+                .collect(Collectors.toList());
+
+        // Además de lo que venga de la variable de entorno/propiedad, estos
+        // tres orígenes quedan garantizados SIEMPRE como literales de código
+        // (no dependen de ningún parseo de archivo externo): así, aunque la
+        // propiedad o la variable de Railway tengan basura invisible, el
+        // dominio real de producción nunca queda bloqueado.
+        List<String> origenesGarantizados = List.of(
+                "https://ecofinanceclub.com",
+                "https://www.ecofinanceclub.com",
+                "http://localhost:4200"
+        );
+
+        List<String> origenes = java.util.stream.Stream.concat(
+                        origenesGarantizados.stream(),
+                        origenesDesdeConfig.stream())
+                .distinct()
                 .collect(Collectors.toList());
 
         // Log al arrancar: aparece en los logs de deploy de Railway y permite
@@ -68,10 +87,6 @@ public class SecurityConfig {
         log.info("CORS - orígenes permitidos cargados: {}", origenes);
 
         CorsConfiguration configuration = new CorsConfiguration();
-        // setAllowedOriginPatterns en vez de setAllowedOrigins: admite los
-        // mismos valores exactos que ya usábamos, pero además permite usar
-        // patrones con "*" si en algún momento hiciera falta (por ejemplo
-        // subdominios), sin tener que volver a tocar este archivo.
         configuration.setAllowedOriginPatterns(origenes);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -87,9 +102,9 @@ public class SecurityConfig {
 
         // Envolvemos el source para loguear, EN CADA PETICIÓN REAL (no solo al
         // arrancar), qué header "Origin" llegó y si matchea contra la lista
-        // configurada. Esto permite confirmar en los logs de Railway, request
-        // por request, si el problema es el origen recibido o algo de
-        // infraestructura (réplica vieja, caché de build, etc.).
+        // configurada. Si vuelve a fallar, ahora además se listan los códigos
+        // Unicode del Origin recibido, para detectar cualquier carácter
+        // invisible en la petición del propio navegador/curl.
         return (HttpServletRequest request) -> {
             String origenRecibido = request.getHeader("Origin");
             CorsConfiguration resultado = source.getCorsConfiguration(request);
@@ -97,6 +112,10 @@ public class SecurityConfig {
                     && resultado.checkOrigin(origenRecibido) != null;
             log.info("CORS - petición {} {} | Origin recibido: {} | ¿permitido?: {} | orígenes configurados: {}",
                     request.getMethod(), request.getRequestURI(), origenRecibido, permitido, origenes);
+            if (!permitido && origenRecibido != null) {
+                log.warn("CORS - Origin recibido NO permitido. Códigos Unicode: {}",
+                        origenRecibido.chars().boxed().collect(Collectors.toList()));
+            }
             return resultado;
         };
     }
