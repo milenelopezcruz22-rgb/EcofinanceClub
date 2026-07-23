@@ -20,6 +20,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 // Configuración de seguridad (Fase 2 - Cierre, cambio de arquitectura).
 // El frontend definitivo es Angular, que consume únicamente la API REST bajo
 // /api/**. La única fuente de usuarios es la tabla "usuarios" (a través de
@@ -82,7 +84,21 @@ public class SecurityConfig {
         // navegador. Esto NO afecta autorización ni roles: el bloqueo real de
         // acceso lo sigue haciendo authorizeHttpRequests(), que no se toca.
         source.registerCorsConfiguration("/**", configuration);
-        return source;
+
+        // Envolvemos el source para loguear, EN CADA PETICIÓN REAL (no solo al
+        // arrancar), qué header "Origin" llegó y si matchea contra la lista
+        // configurada. Esto permite confirmar en los logs de Railway, request
+        // por request, si el problema es el origen recibido o algo de
+        // infraestructura (réplica vieja, caché de build, etc.).
+        return (HttpServletRequest request) -> {
+            String origenRecibido = request.getHeader("Origin");
+            CorsConfiguration resultado = source.getCorsConfiguration(request);
+            boolean permitido = resultado != null && origenRecibido != null
+                    && resultado.checkOrigin(origenRecibido) != null;
+            log.info("CORS - petición {} {} | Origin recibido: {} | ¿permitido?: {} | orígenes configurados: {}",
+                    request.getMethod(), request.getRequestURI(), origenRecibido, permitido, origenes);
+            return resultado;
+        };
     }
 
     @Bean
