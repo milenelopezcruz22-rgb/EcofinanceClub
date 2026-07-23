@@ -2,7 +2,10 @@ package com.ecofinance.ecofinance.security;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +32,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
+
     // Orígenes permitidos por CORS, configurable por variable de entorno
-    // (app.cors.allowed-origins / CORS_ALLOWED_ORIGINS en Railway), separados
-    // por coma. Si no se define nada, se usan estos por defecto: el dominio
-    // de producción (con y sin "www") y localhost:4200 para seguir probando
-    // en desarrollo local sin romper nada.
+    // (app.cors.allowed-origins / APP_CORS_ALLOWED_ORIGINS en Railway, Spring
+    // Boot hace el "relaxed binding" entre ambos formatos automáticamente),
+    // separados por coma. Si no se define nada, se usan estos por defecto: el
+    // dominio de producción (con y sin "www") y localhost:4200 para seguir
+    // probando en desarrollo local sin romper nada.
     @Value("${app.cors.allowed-origins:https://ecofinanceclub.com,https://www.ecofinanceclub.com,http://localhost:4200}")
     private String allowedOrigins;
 
@@ -44,8 +50,27 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        // Se recorta cada origen (espacios en blanco y comillas sueltas que
+        // suelen quedar pegadas al copiar/pegar el valor en el panel de
+        // variables de Railway) para que un espacio de más o una comilla
+        // accidental no rompa la comparación exacta del origen.
+        List<String> origenes = Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .map(o -> o.replaceAll("^[\"']+|[\"']+$", ""))
+                .filter(o -> !o.isEmpty())
+                .collect(Collectors.toList());
+
+        // Log al arrancar: aparece en los logs de deploy de Railway y permite
+        // confirmar, sin adivinar, qué orígenes quedaron cargados realmente
+        // en este despliegue.
+        log.info("CORS - orígenes permitidos cargados: {}", origenes);
+
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        // setAllowedOriginPatterns en vez de setAllowedOrigins: admite los
+        // mismos valores exactos que ya usábamos, pero además permite usar
+        // patrones con "*" si en algún momento hiciera falta (por ejemplo
+        // subdominios), sin tener que volver a tocar este archivo.
+        configuration.setAllowedOriginPatterns(origenes);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
 
